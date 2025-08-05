@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "92517a3e-397d-4d69-b07a-c586ebc5d981",
+		"name": "Ecommerce-order-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38197544"
+	},
+	"item": [
+		{
+			"name": "showAllOrders",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/orders"
+			},
+			"response": []
+		},
+		{
+			"name": "createNewOrder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderItems\": [{\r\n        \"quantity\": 2,\r\n        \"product\":\"6706f9853cb5c19bf539a5ce\"\r\n    }],\r\n    \"user\":\"6706fa463cb5c19bf539a5dc\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/orders"
+			},
+			"response": []
+		},
+		{
+			"name": "updateOrderStatus",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"pending\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/orders/67097d3a513e6762a08e7cc1"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteOrder",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/orders/67097d6e513e6762a08e7cca"
+			},
+			"response": []
+		},
+		{
+			"name": "getOrder",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/orders/67097d3a513e6762a08e7cc1"
+			},
+			"response": []
+		},
+		{
+			"name": "getOrdersPrice",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/orders/get/totalsales"
+			},
+			"response": []
+		},
+		{
+			"name": "getNumberOfOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/orders/get/count"
+			},
+			"response": []
+		},
+		{
+			"name": "searchByUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/orders/get/userorders/6706fa463cb5c19bf539a5dc"
+			},
+			"response": []
+		}
+	]
+}
