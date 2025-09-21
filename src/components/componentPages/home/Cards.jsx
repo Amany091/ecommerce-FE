@@ -1,19 +1,18 @@
 import Card from "../../ui/Card";
-import { useState } from "react";
-import useWindowWidth from "../../../customHooks/useWindowWidth";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
-import { useGetProductsQuery } from "../../../redux/RTK/productsApi";
 import LoaderSpinner from "../../ui/LoaderSpinner";
+import { useSelector } from "react-redux";
 
 function Cards() {
+  const data = useSelector(state => state.products)
+  const products = data?.data?.products ?? [];
+  const isLoading = data?.loading;
 
-  const { data: products, isLoading } = useGetProductsQuery()
   const newProducts = products?.filter(product => new Date(product.updatedAt).getMonth() - 1 >= new Date(product.createdAt).getMonth() <= new Date(product.createdAt).getMonth() + 1)
-
 
   return (
     <div>
@@ -37,7 +36,7 @@ function Cards() {
           }}
         >
           {newProducts?.map((card, index) => (
-            <div>
+            <div key={card?._id}>
               <SwiperSlide key={`${card.id}-${index}`}>
                 <Link to={`/products/${card._id}`}>
                   <Card
@@ -56,7 +55,6 @@ function Cards() {
         </Swiper>
       }
     </div>
-
   );
 }
 

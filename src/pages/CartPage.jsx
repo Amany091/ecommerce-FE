@@ -1,82 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import CartItems from '../components/componentPages/cart/CartItems';
 import OrderSummary from '../components/componentPages/cart/OrderSummary';
-import { Link } from 'react-router-dom';
-import { AiFillCaretRight } from "react-icons/ai";
-import { useCountOrdersQuery, useDeleteOrderMutation, useGetOrderMutation, useGetOrdersQuery } from '../redux/RTK/adminDashboardApi';
+import { cartActions, fetchCartData} from '../features/cartSlice';
+import Pagination from "../../src/components/componentPages/dashboard/Pagination"
+import BreadCrumb from '../components/ui/BreadCrumb';
 
 const CartPage = () => {
-  const { data: total, refetch:refetchCount } = useCountOrdersQuery();
-  const queryParams = { page: 1, limit: total?.orderCount }
+  const dispatch = useDispatch()
+  const data = useSelector((state) => state.cart)
+  const pagination = data?.data?.pagination ?? {}
+  const [page, setPage] = useState(1)
 
-  const { data: orders, isLoading, isSuccess, refetch } = useGetOrdersQuery(queryParams, {
-    refetchOnFocus: true
-  });
-  
-  const [getOrder, {data: currentOrder}] = useGetOrderMutation({
-    // fixedCacheKey: "getOrder",
-  })
+  useEffect(()=>{
+    dispatch(fetchCartData({params: {page , limit: pagination?.limit}}))
+  },[dispatch])
 
-  const [deleteOrder] = useDeleteOrderMutation()
-  const [showModal, setShowModal] = useState(false)
-  const [updatedOrder, setUpdatedOrders] = useState([])
-  
-  
-
-  const handleDeleteOrder = async (id) => {
-    const newOrders = orders?.filter((order) => order.id !== id)
-    try {
-      await deleteOrder(id).unwrap()
-      setShowModal(false)
-      refetch()
-      setUpdatedOrders(newOrders)
-      refetchCount()
-    } catch (error) {
-      console.log("Error occurred", error)
-    }
+  const handleChangePage = (newPage)=>{
+    setPage(newPage);
+    dispatch(cartActions.setFilters({key: 'page', value: newPage}))
+    dispatch(fetchCartData({params: {...data?.filters, page: newPage, limit: pagination?.limit}}))
   }
-
   
-  const handleFetchOrder = (id) => {
-    setShowModal(true)
-    getOrder(id).unwrap()
-  }
-
-  // useEffect(() => {
-  //   refetch()
-  // }, [])
-
-  useEffect(() => {
-   if(isSuccess) setUpdatedOrders(orders)
-  },[isSuccess, orders])
-  
-
   return (
     <div className="container pb-20">
-      <nav className="mb-5 flex mt-4 space-x-4 items-center">
-        <Link to="/" className="text-gray-500 ">Home</Link>
-        <AiFillCaretRight className='flex' />
-        <span className='text-black'>Cart</span>
-      </nav>
+      <BreadCrumb/>
       <div>
         <h2 className="text-3xl font-bold mb-4">Your cart</h2>
         <div className="grid sm:grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5">
-          <CartItems
-            isLoading={isLoading}
-            updatedOrder={updatedOrder}
-            onFetchOrder={handleFetchOrder}
-            onDeleteOrder={handleDeleteOrder}
-            showModal={showModal}
-            setShowModal={setShowModal}
-            currentOrder={currentOrder}
-          />
-          <OrderSummary
-             updatedOrder={updatedOrder}
-          />
+          <CartItems/>
+          <OrderSummary/>
         </div>
       </div>
+      <Pagination
+          onPageChange={handleChangePage}
+          currentPage={page}
+          totalPages={pagination?.totalPages}
+      />
     </div>
+    
   );
 };
 

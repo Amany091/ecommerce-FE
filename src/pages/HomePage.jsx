@@ -7,21 +7,21 @@ import useWindowWidth from "../customHooks/useWindowWidth";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import "swiper/css"
 import "swiper/css/navigation"
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import CustomerReviews from "../components/componentPages/home/CustomerReviews";
 import Category from "../components/componentPages/home/Category";
 import TopSellingCards from "../components/componentPages/home/TopSellingCards";
-import { useGetBrandsQuery } from "../redux/RTK/brandsApi";
-import { useGetProductsQuery } from "../redux/RTK/productsApi";
-import { useGetCategoriesQuery } from "../redux/RTK/categoriesApi";
-import { useSelector } from "react-redux";
+import { fetchBrandsData } from "../features/brandsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsData } from "../features/productsSlice";
 
 const HomePage = () => {
-  const { data : brands } = useGetBrandsQuery();
-  const { data: products } = useGetProductsQuery()
-  
+  const dispatch = useDispatch()
   const containerRef = useRef()
   const windowWidth = useWindowWidth()
+  const {theme} = useSelector((store)=> store.theme)
+  const data = useSelector((state)=> state.brands)
+  const brands = data?.data?.data ?? [];
 
   const handleScroll = (direction) => {
     if (containerRef.current) {
@@ -29,8 +29,11 @@ const HomePage = () => {
       containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
     }
   }
-
-  const {theme} = useSelector((store)=> store.theme)
+  
+  useEffect(()=>{
+    dispatch(fetchBrandsData())
+    dispatch(fetchProductsData())
+  },[])
 
 
   return (
@@ -107,7 +110,7 @@ const HomePage = () => {
             </div>
           </header>
         </div>
-        {/* brands section */}
+        
         <div className="bg-forground text-forgroundColor p-6 ">
           <Marquee pauseOnHover={true} speed={50}>
             {brands?.map((brand) => (
@@ -116,23 +119,20 @@ const HomePage = () => {
           </Marquee>
         </div>
       </section >
-      {/* arrivals section */}
-      <section >
-        <NewArrivals products={products} />
-      </section >
+      <div >
+        <NewArrivals />
+      </div >
 
-      {/* Top Selling section */}
-      <section className="mt-10">
-        <TopSellingCards products={products} />
-      </section >
 
-      {/* Category section */}
-      <section>
+      <div className="mt-10">
+        <TopSellingCards />
+      </div >
+
+      <div>
         <Category />
-      </section >
+      </div >
 
-      {/* customer reviews section */}
-      <section className="overflow-hidden mb-20 lg:mb-40" >
+      <div className="overflow-hidden mb-20 lg:mb-40" >
         <div className="container">
           <div className="flex justify-between px-2 items-center">
             <Title title="Our happy customers" />
@@ -143,7 +143,8 @@ const HomePage = () => {
           </div>
         </div>
         <CustomerReviews containerRef={containerRef} />
-      </section >
+      </div >
+
     </>
   );
 };

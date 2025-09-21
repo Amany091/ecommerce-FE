@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-const MainSize = ({ sizes, className, selectedSize,setSelectedSize }) => {
+const MainSize = ({ className, setFilter }) => {
+  const [selectedSize, setSelectedSize] = useState('')
 
   const handleSizeClick = (size) => {
     if (size === selectedSize) {
@@ -8,9 +9,11 @@ const MainSize = ({ sizes, className, selectedSize,setSelectedSize }) => {
       setSelectedSize(null)
     } else {
       // Otherwise, set the new size
+      setFilter("size", size)
       setSelectedSize(size)
     }
   };
+  const sizes=["XX-Small", "X-Small", "Small", "Medium", "Large", "X-large", "XX-Large"];
 
   return (
     <div className="flex gap-1 flex-wrap cursor-pointer">

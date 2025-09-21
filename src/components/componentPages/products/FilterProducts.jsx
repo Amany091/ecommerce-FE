@@ -1,21 +1,32 @@
-import React, {  useState } from 'react'
+import {  useEffect, useState } from 'react'
 import PriceSlider from './PriceSlider'
 import AccordionUI from '../../ui/AccordionUI'
 import Color from '../../ui/Color'
 import MainSize from '../../ui/MainSize'
-import { useGetCategoriesQuery} from '../../../redux/RTK/categoriesApi'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCategoriesData } from '../../../features/categoriesSlice'
 
 const FilterProducts = ({ ... props}) => {
-    const {className, onFilterClick , setSelectedCategory, selectedCategory, setSelectedColor, selectedColor, setSelectedSize, selectedSize, selectedPriceRange, setSelectedPriceRange} = props
-    const { data: categories } = useGetCategoriesQuery();
+    const {className, onFilterClick , filters, setFilters} = props;
+    const {data : categories} = useSelector((state)=> state.categories);
+    const [selectedCategory , setSelectedCategory] = useState('')
+    const dispatch = useDispatch()
 
     const handleCategoryClick = (id) => {
         if (id === selectedCategory) {
            setSelectedCategory(null)
         } else {
+            setFilters({...filters, category: id})
             setSelectedCategory(id)
         }
+    };
+
+    useEffect(()=>{
+        dispatch(fetchCategoriesData())
+    },[])
+
+    const updateFilter = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
     };
 
     const {theme} = useSelector((store)=> store.theme)
@@ -35,35 +46,30 @@ const FilterProducts = ({ ... props}) => {
                 {
                     categories?.map((category, index) => {
                         return (
-                            <>
-                                <div key={`${category._id}`} className={`flex justify-between py-3 font-semibold text-xl px-4 cursor-pointer ${theme === "dark" ? 'hover:text-black' : ''} hover:bg-[#f0eeed] rounded-md ${selectedCategory === category._id && "bg-[#f0eeed] rounded-md"}`}
-                                    onClick={() => handleCategoryClick(category._id)}>
-                                    <p>{category.name}</p>
-                                </div>
-                            </>
+                            <div key={`${category._id}`} className={`flex justify-between py-3 font-semibold text-xl px-4 cursor-pointer ${theme === "dark" ? 'hover:text-black' : ''} hover:bg-[#f0eeed] rounded-md ${selectedCategory === category._id && "bg-[#f0eeed] rounded-md"}`}
+                                onClick={() => handleCategoryClick(category._id)}>
+                                <p>{category.name}</p>
+                            </div>
                         )
                     })
                 }
             </div>
             {/* price slider value */}
             <PriceSlider
-                selectedPriceRange={selectedPriceRange}
-                setSelectedPriceRange={setSelectedPriceRange}
+                setFilter={updateFilter}
+                priceRange={filters.priceRange}
             />
             {/* product colors */}
             <AccordionUI title={'Colors'}  >
                 <Color
-                    colors={['red', 'green', 'black', 'gold', 'blue', 'navy']}
-                    selectedColor={selectedColor}
-                    setSelectedColor={setSelectedColor}
+                    setFilter={updateFilter}
+                    color={filters.color}
                 />
             </AccordionUI>
             {/* product sizes */}
             <AccordionUI title={'Size'} >
                 <MainSize
-                    sizes={["XX-Small", "X-Small", "Small", "Medium", "Large", "X-large", "XX-Large"]}
-                    selectedSize={selectedSize}
-                    setSelectedSize={setSelectedSize}
+                    setFilter={updateFilter}
                 />
             </AccordionUI>
            

@@ -1,41 +1,32 @@
-import React, { useState } from "react";
-import MainQuantity from "../../ui/MainQuantity";
-import Button from "../../ui/Button";
+import { useEffect, useState } from "react";
 import MainSize from "../../ui/MainSize";
 import MainReviews from "../../ui/MainReviews";
 import Color from "../../ui/Color";
 import { FaMinus, FaPlus } from "react-icons/fa6";
-import { useGetUserQuery } from "../../../redux/RTK/loginApi";
-import { useAddToCartMutation } from "../../../redux/RTK/cartApi";
-import { ToastError, ToastSuccess } from "../../ui/Toast";
-import { useCountOrdersQuery, useGetOrdersQuery } from "../../../redux/RTK/adminDashboardApi";
-import LoaderSpinner from "../../ui/LoaderSpinner";
+import { addItemtoCart } from "../../../features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getCurrentUser } from "../../../features/authSlice";
 
-const ProductDetails = ({ product }) => {
-  const { data:user } = useGetUserQuery()
+const ProductDetails = () => {
+  const data = useSelector((state) => state.products);
+  const product = data?.item?.data ?? {};
+  const dispatch = useDispatch()
   const [count, setCount] = useState(1); // order quantity
-  const isUserExist = !!localStorage.getItem("role")
-  const [addToCart, {isLoading}] = useAddToCartMutation()
-  const { refetch: refetchCount } = useCountOrdersQuery()
   const [selectedColor, setSelectedColor] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
-
-  const clientOrder = { selectedColor: selectedColor , selectedSize: selectedSize , quantity: count }
+  const user = useSelector((state)=> state.user)
+  const currentUser = user?.data?.data || {}
+  const [loading, setLoading] = useState(false)
 
   async function handleAddToCart() {
-    const quantity = Number(count)
-    try {
-      await addToCart({ count: quantity, productId: product?._id, userId: "670e2e1d58277efbe52cabd1" }).unwrap()
-      if (!isUserExist) {
-        ToastError("You Must Login Before Add To Your Cart") 
-      } else { 
-        ToastSuccess("Order has been added ")
-        refetchCount()
-      }
-    } catch (error) {
-      console.log(error?.errors[0].msg)
-    }
+    setLoading(true)
+    const body = { orderItems:[{product: product?._id, quantity: count}], user: currentUser?._id, status: 'pending' };
+    await dispatch(addItemtoCart(body)).unwrap().finally(()=> setLoading(false))
   }
+
+  useEffect(()=>{
+    dispatch(getCurrentUser())
+  },[])
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -92,7 +83,7 @@ const ProductDetails = ({ product }) => {
           className="lg:w-[400px] md:w-[200px] w-[236px] bg-forground p-3 hover:bg-black/50  hover:text-white text-white  rounded-buttonRadius"
           onClick={() => handleAddToCart()}
         >
-          {isLoading ? <LoaderSpinner/> : "Add To Cart"}
+          {loading ? "Adding..." : "Add To Cart"}
         </button>
       </div>
     </div>

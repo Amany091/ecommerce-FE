@@ -1,38 +1,36 @@
 import Card from "../../ui/Card";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useGetProductsQuery } from "../../../redux/RTK/productsApi";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsData } from "../../../features/productsSlice";
 
 function RelatedProducts() {
-
-  const { data: products, isSuccess } = useGetProductsQuery({}, {
-    refetchOnFocus: true
-  })
-  const [productsList, setProductsList] = useState([])
-  const shuffledData = shuffleProducts([...productsList])
-
+  const dispatch = useDispatch()
+  const data = useSelector((state)=> state.products);
+    const products = data?.data?.products ?? [];
+  const shuffledData = shuffleProducts(products)
 
   function shuffleProducts(data) {
-    const prods = data
-    for (let i = prods?.length - 1; i > 0; i--) {
+    if (!data) return [];
+    const prods = [...data];
+    for (let i = prods.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [prods[i], prods[j]] = [prods[j], prods[i]];
     }
-    return data
+    return prods;
   }
 
-  useEffect(() => {
-    if (isSuccess) setProductsList([...products])
-  }, [isSuccess])
-
+  useEffect(()=>{
+    dispatch(fetchProductsData())
+  },[])
 
   return (
     <div className="container mt-20 md:mb-20 lg:mb-32">
       <div className="grid lg:grid-cols-4 sm:grid-cols-1 gap-8">
       {shuffledData.slice(0,4).map((card) => (
-          <SwiperSlide key={card.id}>
+          <SwiperSlide key={card._id}>
             <Card
               imageSrc={card.imgCover}
               imageAlt={card.title}

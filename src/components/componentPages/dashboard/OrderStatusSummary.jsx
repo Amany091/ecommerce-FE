@@ -1,5 +1,6 @@
 import { BsClipboardCheck, BsClipboardX } from "react-icons/bs";
 import { IoMdStopwatch } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 
 const OrderSummaryBox = ({ type, count, label }) => {
@@ -34,14 +35,25 @@ const OrderSummaryBox = ({ type, count, label }) => {
   );
 };
 
-const OrderStatusSummary = ({orderStatus }) => {
- 
-    
+const OrderStatusSummary = () => { 
+  const data = useSelector((state) => state.orders);
+  const orders = data?.data?.data ?? [];
+  
+  const statusSummary = orders?.reduce(
+    (acc, order) => {
+      if (order?.status === "complete") acc.completed += 1;
+      if (order?.status === "pending") acc.pending += 1;
+      if (order?.status === "canceled") acc.canceled += 1;
+      return acc;
+    },
+    { completed: 0, pending: 0, canceled: 0 }
+  );
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8">
-      <OrderSummaryBox type="completed" count={orderStatus.completed} label="Completed orders" />
-      <OrderSummaryBox type="canceled" count={orderStatus.canceled} label="Canceled orders" />
-      <OrderSummaryBox type="pending" count={orderStatus.pending} label="pending orders" />
+      <OrderSummaryBox type="completed" count={statusSummary.completed} label="Completed orders" />
+      <OrderSummaryBox type="canceled" count={statusSummary.canceled} label="Canceled orders" />
+      <OrderSummaryBox type="pending" count={statusSummary.pending} label="pending orders" />
     </div>
   );
 };

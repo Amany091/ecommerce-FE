@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import CartPage from "./pages/CartPage";
 import RegisterPage from "./pages/RegisterPage";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import LoginPage from "./pages/LoginPage";
 import UserOrders from "./pages/UserOrders";
@@ -14,7 +14,7 @@ import BestOffers from "./pages/BestOffers";
 import ProtectedRouting from "./authorization/ProtectedRouting";
 import DetailsPage from "./pages/DetailsPage";
 import CategoryPage from "./pages/CategoryPage";
-import { store } from "./redux/apiStore";
+import { store } from "./store/apiStore";
 
 function App() {
 

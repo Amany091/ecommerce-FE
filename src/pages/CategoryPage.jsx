@@ -1,37 +1,40 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useGetCategoryMutation } from "../redux/RTK/categoriesApi";
-import { useGetProductsQuery } from "../redux/RTK/productsApi";
-import CurrentPath from "../components/ui/CurrentPath";
+import {fetchCategory } from "../features/categoriesSlice";
 import Card from "../components/ui/Card";
 import LoaderSpinner from "../components/ui/LoaderSpinner";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsData } from "../features/productsSlice";
+import BreadCrumb from "../components/ui/BreadCrumb";
 
 function CategoryPage() {
   const {id} = useParams();
-  const [setCategory, { data: cat }] = useGetCategoryMutation();
-  const { data: products, isLoading } = useGetProductsQuery()
-  const data = products?.filter((product)=> product.category.name === cat?.name) ?? []
-  console.log(data)
+  const data = useSelector((state)=> state.products);
+  const products = data?.data?.products;
+  const {item: category} = useSelector((state)=> state.categories);
+  const productsBasedCat = products?.filter((product)=> product.category.name === category?.name) ?? [];
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setCategory(id)
+    dispatch(fetchProductsData())
+    dispatch(fetchCategory(id))
   },[id])
 
   return (
     <div className=" container mb-40">
-      <CurrentPath currentPath={[cat?.name]}  />
-      <h1 className="mt-10 text-[28px] font-semibold">{cat?.name}</h1>
-        {isLoading ? <LoaderSpinner/> : 
+      <BreadCrumb/>
+      <h1 className="mt-10 text-[28px] font-semibold">{category?.name}</h1>
+        {data?.loading ? <LoaderSpinner/> : 
       <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-7 mt-5 ">
-          {data.map((prod) => (
+          {productsBasedCat.map((prod) => (
             <Card
-              imageSrc={prod.imgCover}
-              imageAlt={prod.title}
-              cardTitle={prod.title}
-              price={prod.price}
-              priceAfterDiscount={prod.priceAfterDiscount}
-              key={prod._id}
-              rate={prod.ratingsAverage}
+              imageSrc={prod?.imgCover}
+              imageAlt={prod?.title}
+              cardTitle={prod?.title}
+              price={prod?.price}
+              priceAfterDiscount={prod?.priceAfterDiscount}
+              key={prod?._id}
+              rate={prod?.ratingsAverage}
             />
           ))}
       </div>

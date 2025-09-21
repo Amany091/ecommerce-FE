@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import { Link, useNavigate } from 'react-router-dom'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
-import { useRegisterMutation } from '../redux/RTK/registerApi'
-import { ToastError, ToastSuccess } from '../components/ui/Toast'
-import LoaderSpinner from '../components/ui/LoaderSpinner'
-import { useSelector } from 'react-redux'
+import { handleSignUp} from '../features/registerSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 
 const RegisterPage = () => {
 
   const {theme} = useSelector((state)=> state.theme)
-  const [register, { data, isSuccess, isLoading }] = useRegisterMutation()
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
 
   const validateSchema = Yup.object({
     firstname: Yup.string().required("Required Field"),
@@ -28,11 +28,11 @@ const RegisterPage = () => {
 
   const handleForm = async (data) => {
     try {
-      await register({ data }).unwrap()
-      ToastSuccess("User added successfully")
-      navigate('/login')
+      setLoading(true)
+       await dispatch(handleSignUp(data)).unwrap().finally(()=> setLoading(false))
+       navigate('/login')
     } catch (error) {
-      ToastError(error?.errors[0].msg)
+      toast.error(error?.details[0].msg)
     }
      
 
@@ -109,7 +109,7 @@ const RegisterPage = () => {
               <div className="text-red-700 font-inter text-[15px]">{formik.errors.passwordConfirm}</div>
             ) : null}
           </div>
-          <Button children={ isLoading ? <LoaderSpinner/> : "Sign Up" }  type={'submit'} className="block py-[10px] mx-auto rounded-lg dark:hover:text-black" />
+          <Button children={ loading ? 'signing up...' : "Sign Up" }  type={'submit'} className="block py-[10px] mx-auto rounded-lg dark:hover:text-black" />
           <span className="flex justify-center gap-2 mt-3 text-center text-[15px]">
             <span className='text-placeholderColor'>Already have an account?</span>
             <Link className="underline decoration-2 text-bold text-[16px] dark:text-black" to={"/login"}>Sign In</Link>

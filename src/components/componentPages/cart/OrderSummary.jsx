@@ -1,12 +1,13 @@
-import React from 'react';
 import { BsArrowRight } from "react-icons/bs";
 import { AiFillTag } from "react-icons/ai";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Button from "../../ui/Button";
-// import { applyPromoCode } from "../../../redux/features/cartsSlice"; 
-const OrderSummary = ({updatedOrder}) => {
 
-  const subtotal = updatedOrder?.reduce((acc, item) => acc + item.orderItems[0].product.price * item.orderItems[0].quantity, 0) || 0;
+const OrderSummary = () => {
+   const data = useSelector((state) => state.cart);
+    const { data: cart } = data?.data ?? [];
+
+  const subtotal = cart?.reduce((acc, item) => acc + item.orderItems[0].product?.price * item.orderItems[0]?.quantity, 0) || 0;
   const discount = subtotal * 0.2;
   const deliveryFee = 15;
   const total = subtotal - discount + deliveryFee;
@@ -32,7 +33,7 @@ const OrderSummary = ({updatedOrder}) => {
         <p className='text-sm lg:text-lg font-bold '>${total.toFixed(2)}</p>
       </div>
 
-      {updatedOrder?.length > 0 && (
+      {cart?.length > 0 && (
         <>
           <div className="flex sm:hidden items-center justify-between mb-4">
             <div className="relative w-3/4 px-2">

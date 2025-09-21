@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { MdCheck } from 'react-icons/md'
 
-const Color = ({ colors, selectedColor, setSelectedColor }) => {
-    const [check, setCheck] = useState(-1);
+const Color = ({  color, setFilter }) => {
+    const [selectedColor, setSelectedColor] = useState('');           
+    const  colors=['red', 'green', 'black', 'gold', 'blue', 'navy'];
 
-    const handleColorClick = (color, index) => {
-        if (color === selectedColor) {
+    const handleColorClick = (value) => {
+        if (color === value) {
             // If the selected size is clicked again, clear the selection
             setSelectedColor(null)
-            setCheck(-1)
         } else {
             // Otherwise, set the new size
-           setSelectedColor(color)
-            setCheck(index)
+            setFilter("color", value)
+            setSelectedColor(value)
         }
     };
 
@@ -23,7 +23,7 @@ const Color = ({ colors, selectedColor, setSelectedColor }) => {
                     key={index}
                     className={`rounded-full border border-slate-400/30 w-[37px] h-[37px] flex items-center justify-center cursor-pointer`}
                     style={{ backgroundColor: color }}
-                    onClick={() => handleColorClick(color, index)}
+                    onClick={() => handleColorClick(color)}
                 >
                     {selectedColor === color && <MdCheck className={` ${color === "#FFFFFF" ? "text-slate-400/30" : "text-white"} `} />}
                 </div>

@@ -1,92 +1,79 @@
-import { useState } from 'react';
-import { FaCheckCircle, FaRegEye } from 'react-icons/fa'
-import { TiDelete } from "react-icons/ti";
-import LoaderSpinner from '../../ui/LoaderSpinner';
-import { Oval } from 'react-loader-spinner';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteOrder, updateOrder } from '../../../features/ordersSlice';
+import SearchOrder from './SearchOrder';
+import {FaRegEye, FaCheckCircle} from "react-icons/fa"
+import {TiDelete} from "react-icons/ti"
 
-const OrderTable = ({ orders, completed, searchResult, onChangeOrderStatus, onSearchOrder, onDeleteOrder, isDirty, isLoading, loading }) => {
-
-  const [orderId, setOrderId] = useState(null)
-  const {theme} = useSelector((store)=> store.theme)
+const OrderTable = () => {
+  const dispatch = useDispatch()
+  const data = useSelector((state)=> state.orders);
+  const orders = data?.data?.data ?? [];
   
-  const handleChangeOrderStatus = (id, status) => {
-    setOrderId(id)
-    onChangeOrderStatus(id, status).finally(() => {
-      setOrderId(null)
-    })
+  const handleChangeOrderStatus = (id) => {
+    dispatch(updateOrder({id, body: {status: "complete"}}))
   }
 
   return (
     <div className="overflow-x-auto">
       <h2 className='text-2xl font-bold mb-4'>All orders</h2>
       <div className='relative'>
-      <input
-        type="text"
-        placeholder="Search by order number or seller or status "
-        className="border border-gray-300 rounded p-2 mb-4 w-full dark:text-black"
-        onChange={(e) => onSearchOrder(e)}
-      />
-      {searchResult?.length == 0 && isDirty == true && <p className='text-red-600 absolute end-3 top-3 font-bold text-xs ' >not exist</p>}
+      <SearchOrder/>
       </div>
-      <table className="table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-4">
-              <input
-                className="h-5 w-5 border-2 border-gray-500 rounded"
-                type="checkbox"
-                checked={completed === orders?.length}
-                readOnly
-              />
-            </th>
-            <th className="px-6 py-6 text-sm md:text-base">Order number</th>
-            <th className="px-6 py-6 text-sm md:text-base  sm:table-cell">Order date</th>
-            <th className="px-6 py-6 text-sm md:text-base">Seller</th>
-            <th className="px-6 py-6 text-sm md:text-base  lg:table-cell">Price</th>
-            <th className="px-6 py-6 text-sm md:text-base">Order status</th>
-            <th className="px-6 py-6 text-sm md:text-base">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isLoading ? <LoaderSpinner/> : (searchResult.length > 0 ? searchResult : orders)?.map((order,index) => (
-            <tr key={order.id} className="border-b border-slate-100 text-center">
-              <td className="h-[100px] flex items-center justify-center gap-3">
-                {loading && orderId === order.id && <Oval height={20} width={20} color={theme === "dark" ? "white" : "black"} /> }
+        <table className="table-auto">
+          <thead>
+            <tr>
+              <th className="px-4 py-4">
                 <input
+                  className="h-5 w-5 border-2 border-gray-500 rounded"
                   type="checkbox"
-                  checked={order.status === "complete"}
-                  disabled={order.status === 'canceled'}
-                  className="h-5 w-5 border-2 border-gray-500 rounded dark:text-black inline"
-                  onClick={() => handleChangeOrderStatus(order.id, "complete")}
+                  // checked={completed === orders?.length}
                   readOnly
                 />
-                
-              </td>
-              <td className="px-6 py-6 text-sm md:text-base">{order.number}</td>
-              <td className="px-6 py-6 text-sm md:text-base  sm:table-cell">{order.orderDate}</td>
-              <td className="px-6 py-6 text-sm md:text-base">{order.status == 'complete' ? order.user.name : ""}</td>
-              <td className="px-6 py-6 text-sm md:text-base  lg:table-cell">{order.price}</td>
-              <td className="px-6 py-6 text-sm md:text-base">
-                {order.status === 'complete' ?
-                  <FaCheckCircle className="text-green-500 mx-auto" /> :
-                  <div className='flex items-center gap-1'>
-                    <p>{order.status}</p>
-                    {order.status === "pending" || order.status === "processing" ? <span className='inline-block w-2 h-2 rounded-full bg-orange-400' ></span> : <span className='inline-block w-2 h-2 rounded-full bg-red-600' ></span>}
-                  </div>
-                }
-              </td>
-              <td className="px-10 py-6 flex gap-1 justify-center items-center">
-                <FaRegEye className='text-green-500 ' />
-                {order.status === "pending" || order.status === 'canceled' || order.status === 'complete' ? "" : <TiDelete color='red' className='cursor-pointer' onClick={() => onDeleteOrder(order.id)} />}
-              </td>
+              </th>
+              <th className="px-6 py-6 text-sm md:text-base">Order number</th>
+              <th className="px-6 py-6 text-sm md:text-base  sm:table-cell">Order date</th>
+              <th className="px-6 py-6 text-sm md:text-base">Seller</th>
+              <th className="px-6 py-6 text-sm md:text-base  lg:table-cell">Price</th>
+              <th className="px-6 py-6 text-sm md:text-base">Order status</th>
+              <th className="px-6 py-6 text-sm md:text-base">Actions</th>
             </tr>
-          ))}
-
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {orders?.map((order)=>(
+              <tr key={order.id} className="border-b border-slate-100 text-center">
+                <td className="h-[100px] flex items-center justify-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={order.status === "complete"}
+                    disabled={order.status === 'canceled'}
+                    className="h-5 w-5 border-2 border-gray-500 rounded dark:text-black inline"
+                    onClick={() => handleChangeOrderStatus(order?.id)}
+                    readOnly
+                  />
+                </td>
+                <td className="px-6 py-6 text-sm md:text-base">{order.number}</td>
+                <td className="px-6 py-6 text-sm md:text-base  sm:table-cell">{order.orderDate}</td>
+                <td className="px-6 py-6 text-sm md:text-base">{order.user?.name}</td>
+                <td className="px-6 py-6 text-sm md:text-base  lg:table-cell">{order.price}</td>
+                <td className="px-6 py-6 text-sm md:text-base">
+                  {order.status === 'complete' ?
+                    <FaCheckCircle className="text-green-500 mx-auto" /> :
+                    <div className='flex items-center gap-1'>
+                      <p>{order.status}</p>
+                      {order.status === "pending" || order.status === "processing" ? <span className='inline-block w-2 h-2 rounded-full bg-orange-400' ></span> : <span className='inline-block w-2 h-2 rounded-full bg-red-600' ></span>}
+                    </div>
+                  }
+                </td>
+                <td className="px-10 py-6 flex gap-1 justify-center items-center">
+                  <FaRegEye className='text-green-500 ' />
+                  { <TiDelete color='red' className='cursor-pointer' onClick={() => dispatch(deleteOrder(order?.id))} />}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
   )
 }
 
-export default OrderTable
+export default OrderTable;

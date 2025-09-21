@@ -3,11 +3,15 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import SignupTopbar from "../ui/SignupTopbar";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getCurrentUser } from "../../features/authSlice";
 
 const Layout = () => {
-  const isUserExist = !!localStorage.getItem("role")
   const {theme} = useSelector((state) => state.theme)
+  const dispatch = useDispatch()
+  const user = useSelector((state)=> state.user)
+  const currentUser = user?.data?.data || {}
+  const isUserExist = currentUser && Object.keys(currentUser).length > 0
 
   useEffect(() => {
     const root = document.getElementById("root")
@@ -20,6 +24,7 @@ const Layout = () => {
       root.style.backgroundColor = "white"
       root.style.color = "black"
     }
+    dispatch(getCurrentUser())
   }, [theme])
   
   return (

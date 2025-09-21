@@ -1,4 +1,3 @@
-import ImageOne from "../../../assets/images/image-7.png";
 import Card from "../../ui/Card";
 import { useState } from "react";
 import useWindowWidth from "../../../customHooks/useWindowWidth";
@@ -8,8 +7,11 @@ import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import Title from "../../ui/Title";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-function TopSellingCards({ products }) {
+function TopSellingCards() {
+  const data = useSelector((state) => state.products);
+  const products = data?.data?.products ?? [];
   const productsWithHigherRate = products?.filter((product) => product.ratingsAverage > 3)
   const [viewAll, setViewAll] = useState(false);
   const windowWidth = useWindowWidth();

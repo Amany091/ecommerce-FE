@@ -1,31 +1,45 @@
-import React from 'react'
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-    const pages = []
-    for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-    }
-  return (
-    <div className='flex justify-between my-2'>
-          <button
-              className='border border-slate-300 py-1 px-3 rounded'
-              onClick={() => onPageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-          >Previous</button>
-          {pages.map((page) => (
-              <button
-                  className={` ${currentPage === page ? "bg-slate-300" : 'text-slate-300'} w-10 rounded dark:text-black`}
-                  key={page}
-                  onClick={()=>onPageChange(page)}
-              > {page} </button>
-          ))}
-          <button
-              className='border border-slate-300 py-1 px-3 rounded'
-              onClick={() => onPageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-          >Next</button>
-    </div>
-  )
-}
+  if (totalPages <= 1) return null; // no need to render if only one page
 
-export default Pagination
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  return (
+    <div className="flex items-center justify-center gap-2 my-4">
+      {/* Previous */}
+      <button
+        className="border border-slate-300 py-1 px-3 rounded disabled:opacity-50"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+
+      {/* Page numbers */}
+      {pages.map((page) => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          className={`w-10 rounded transition-colors ${
+            currentPage === page
+              ? "bg-slate-300 text-black"
+              : "text-slate-500 hover:bg-slate-200"
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+
+      {/* Next */}
+      <button
+        className="border border-slate-300 py-1 px-3 rounded disabled:opacity-50"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  );
+};
+
+export default Pagination;

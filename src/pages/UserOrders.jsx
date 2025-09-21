@@ -1,30 +1,37 @@
-import React, { useState } from 'react'
-import CurrentPath from '../components/ui/CurrentPath'
-import Title from '../components/ui/Title'
+import { useEffect, useState } from 'react'
 import Order from '../components/componentPages/userOrders/Order'
 import OrderSummary from '../components/componentPages/cart/OrderSummary'
-import tshirt from "../assets/images/tshirt.png"
 import DashboardSidebar from "../components/componentPages/dashboard/DashboardSidebar"
-import { useGetOrdersQuery } from '../redux/RTK/adminDashboardApi'
 import { MdArrowRight } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import LoaderSpinner from '../components/ui/LoaderSpinner'
+import { useDispatch, useSelector } from 'react-redux'
+import BreadCrumb from '../components/ui/BreadCrumb'
+import Pagination from '../components/componentPages/dashboard/Pagination'
+import { fetchOrdersData } from '../features/ordersSlice'
 
 const UserOrders = () => {
     const [status, setStatus] = useState("pending")
     const navigate = useNavigate()
+    const [page, setPage] = useState(1)
+    const dispatch = useDispatch()
 
+    const data = useSelector((state) => state.orders);
+    const orders = data?.data?.data ?? [];
+    const pagination = data?.data?.pagination;
 
-    const { data: orders, isLoading } = useGetOrdersQuery({ page: 1, limit: 100 }, {
-        refetchOnFocus: true
-    })
+    useEffect(()=>{
+            dispatch(fetchOrdersData({page, limit: pagination?.limit}))
+    },[])
 
+    const handleChangePage = (newPage) => {
+        setPage(newPage)
+        dispatch(fetchOrdersData({params: {...data?.filters, page: newPage, limit: pagination?.limit}}))
+    }
 
     return (
         <div className="container font-inter mb-32">
-            <nav>
-                <CurrentPath currentPath={["orders"]} />
-            </nav>
+            <BreadCrumb/>
             <div className="grid lg:grid-cols-[295px,.9fr] md:grid-cols-[295px,.9fr] sm:grid-cols-1 gap-5 ">
                 <DashboardSidebar />
                 <div>
@@ -38,13 +45,19 @@ const UserOrders = () => {
                     </div>
                     {orders?.length === 0 ?
                         <div> It looks like you haven't placed any orders yet. <button onClick={() => navigate("/")} >  Start exploring our collection <MdArrowRight size={30} className='inline' /></button> </div> : (
-                            isLoading ? <LoaderSpinner />
+                            data?.loading ? <LoaderSpinner />
                                 : (
                                     <div className=' border border-slate-300/50 rounded p-2 my-10'>
                                         <Order orders={orders} status={status} />
                                     </div>
                                 )
-                        )}
+                                
+                    )}
+                    <Pagination
+                        totalPages={pagination?.totalPages}
+                        onPageChange={handleChangePage}
+                        currentPage={page}
+                    />
                     <div className='flex gap-5 flex-wrap lg:flex-nowrap md:flex-wrap justify-center'>
                         <OrderSummary showButton={false} updatedOrder={orders} />
                         <div className='border border-slate-300/50 rounded p-2 w-full  ' >
