@@ -2,13 +2,13 @@ import createDataSlice from "../lib/slices/createDataSlice";
 
 const lognInSlice = createDataSlice({
   name: "login",
-  endpoint: `${import.meta.env.VITE_BASE_URL}/auth/login`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/auth/login`,
   transformResponse: (response) => response,
 });
 
 const getUserSlice = createDataSlice({
   name: "user",
-  endpoint: `${import.meta.env.VITE_BASE_URL}/auth/currentUser`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/auth/currentUser`,
     transformResponse: (response) => {
       return {
         user: response
@@ -18,7 +18,7 @@ const getUserSlice = createDataSlice({
 
 const logoutSlice = createDataSlice({
   name: 'logout',
-  endpoint: `${import.meta.env.VITE_BASE_URL}/auth/logout`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/auth/logout`,
   transformResponse: (response) => response,
 })
 

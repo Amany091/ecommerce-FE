@@ -1,6 +1,6 @@
 import createDataSlice from "../lib/slices/createDataSlice";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const fetchProducts = createDataSlice({
     name:"products",

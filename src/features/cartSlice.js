@@ -1,13 +1,13 @@
 import createDataSlice from "../lib/slices/createDataSlice";
 
 const cartSlice = createDataSlice({
-    name: 'cart',
-    endpoint: `${import.meta.env.VITE_BASE_URL}/orders`,
-    transformResponse: ((data)=>{
-        return {
-            cart: data
-        }
-    })
+  name: "cart",
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/orders`,
+  transformResponse: (data) => {
+    return {
+      cart: data,
+    };
+  },
 });
 
 export const {

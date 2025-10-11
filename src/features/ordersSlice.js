@@ -2,12 +2,12 @@ import createDataSlice from "../lib/slices/createDataSlice";
 
 const ordersSlice = createDataSlice({
   name: "orders",
-  endpoint: `${import.meta.env.VITE_BASE_URL}/orders`,
-  transformResponse: (data) =>{
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/orders`,
+  transformResponse: (data) => {
     return {
-        orders: data
-    }
-  }
+      orders: data,
+    };
+  },
 });
 
 export const {
