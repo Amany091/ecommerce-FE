@@ -1,7 +1,7 @@
 import createDataSlice from "../lib/slices/createDataSlice";
 
 const signupSlice = createDataSlice({
-  endpoint: `${import.meta.env.VITE_SERVER_URL}/auth/signup`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/signup`,
   name: "signup",
   transformResponse: (data) => ({
     signup: data?.data,

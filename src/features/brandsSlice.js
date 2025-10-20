@@ -2,7 +2,7 @@ import createDataSlice from "../lib/slices/createDataSlice";
 
 const brandSlice = createDataSlice({
   name: "brands",
-  endpoint: `${import.meta.env.VITE_SERVER_URL}/brands`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/api/v1/brands`,
   transformResponse: (data) => {
     return {
       brands: data,

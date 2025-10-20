@@ -2,7 +2,7 @@ import createDataSlice from "../lib/slices/createDataSlice";
 
 const cartSlice = createDataSlice({
   name: "cart",
-  endpoint: `${import.meta.env.VITE_SERVER_URL}/orders`,
+  endpoint: `${import.meta.env.VITE_SERVER_URL}/api/v1/orders`,
   transformResponse: (data) => {
     return {
       cart: data,
