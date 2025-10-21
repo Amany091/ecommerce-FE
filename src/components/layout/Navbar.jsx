@@ -74,9 +74,9 @@ function Navbar() {
   const handleLogout = () => {
     try {
      dispatch(logoutUser())
-      navigate("/login")
+    window.location.href = "/login"
     } catch (error) {
-      console.log(error)
+      return error;
     }
   }
 
