@@ -105,7 +105,7 @@ function Navbar() {
           <li className="dropdown flex items-center relative right-[-10px]" onClick={handleDropdown} ref={dropdownRef}>
             <span className="cursor-pointer">Shop</span>
             <RiArrowDropDownLine className="text-[25px] mt-1 cursor-pointer" />
-            <ul className={dropdownStatus ? "show-dropdown flex flex-col py-3 px-2 z-10 bg-white absolute w-[150px] shadow-custom rounded-md" : "hidden"} style={{ top: 'calc(100% + 5px)' }}>
+            <ul className={dropdownStatus ? "show-dropdown flex flex-col dark:bg-dark py-3 px-2 z-10 bg-white absolute w-[150px] shadow-custom rounded-md" : "hidden"} style={{ top: 'calc(100% + 5px)' }}>
               <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/men">Men</Link></li>
               <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/women">Women</Link></li>
               <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/kids">Kids</Link></li>

@@ -14,6 +14,8 @@ function LoginPage() {
 
   const { theme } = useSelector((state) => state.theme)
   const data = useSelector(store => store.login);
+  const user = useSelector(store => store.user);
+  const role = user?.data?.data?.role || ""
   const navigate = useNavigate();
 
   const handleClickShowPassword = (e) => {
@@ -23,7 +25,7 @@ function LoginPage() {
   const handleLogin = (data) => {
    try {
      dispatch(loginUser(data));
-     navigate("/");
+     window.location.href = "/"
    } catch (error) {
     return error;
    }

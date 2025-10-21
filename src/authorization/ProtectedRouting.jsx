@@ -3,10 +3,12 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRouting = ({ children }) => {
-    
-  if (localStorage.getItem("role") != null) {
+  const user = useSelector((state) => state.user);
+  const isLoggedIn = user?.data?.data?.role ? true : false;
+  
+  if (isLoggedIn) {
     return children;
-  }  else {
+  } else {
     return <Navigate to="/login" replace={true} />;
   }
 };

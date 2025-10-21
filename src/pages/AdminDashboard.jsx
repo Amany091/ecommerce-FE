@@ -17,7 +17,6 @@ const AdminDashboard = () => {
     },[])
 
     const handleChangePage = (newPage) => {
-        console.log(newPage)
         setPage(newPage)
         dispatch(fetchOrdersData({params: {...data?.filters, page: newPage, limit: pagination?.limit}}))
     }
