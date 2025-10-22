@@ -69,6 +69,15 @@ export const createDataSlice = (
       }
     );
 
+    const updateAllData = createAsyncThunk(`${name}/updateAllData`, async ()=>{
+      try {
+        const data = await request('PUT', null, null, `${endpoint}/updateAll`);
+        return transformResponse(data);
+      } catch (error) {
+        return rejectWithValue(error)
+      }
+    })
+
     const deleteData = createAsyncThunk(
       `${name}/deleteData`,
       async (id, { rejectWithValue }) => {
@@ -178,6 +187,21 @@ export const createDataSlice = (
               state.error = action.error.message;
             })
 
+            .addCase(updateAllData.pending, (state, action)=>{
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(updateAllData.fulfilled, (state, action)=>{
+              state.loading = false;
+              state.error = null;
+              toast.success("All items updated successfully");
+              state.data.data = action.payload[name].data;
+            })
+            .addCase(updateAllData.rejected, (state, action)=>{
+              state.loading = false;
+              state.error = action.error.message;
+            })
+
             .addCase(fetchItem.pending, (state, action) => {
               state.loading = true;
             })
@@ -198,6 +222,7 @@ export const createDataSlice = (
       fetchData,
       deleteData,
       updateData,
+      updateAllData,
       createData,
       fetchItem,
       debouncedFetchData,

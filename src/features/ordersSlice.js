@@ -17,5 +17,6 @@ export const {
     fetchItem: fetchOrder,
     deleteData: deleteOrder,
     updateData: updateOrder,
+    updateAllData: updateAllOrders,
     debouncedFetchData: debounceedOrdersData
 } = ordersSlice;

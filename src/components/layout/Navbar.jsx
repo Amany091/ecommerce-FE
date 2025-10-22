@@ -15,6 +15,7 @@ import { MdOutlineWbSunny } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../../features/themeSlice";
 import {logoutUser } from "../../features/authSlice";
+import { fetchProductsData, productsActions } from "../../features/productsSlice";
 
 function Navbar() {
   const [dropdownStatus, setDropdownStatus] = useState(false);
@@ -30,6 +31,7 @@ function Navbar() {
   const { theme } = useSelector((state) => state.theme)
   const dispatch = useDispatch()
   const user = useSelector((state)=> state.user)
+  const {filters} = useSelector((state)=> state.products)
 
   const currentUser = user?.data?.data || {}
   const isLogged = currentUser && Object.keys(currentUser).length > 0
@@ -51,6 +53,17 @@ function Navbar() {
   const handleSearchOpen = () => {
     setSearchOpen((prev) => !prev);
   };
+
+  const handleProductsFilter = (type)=>{
+    navigate("/products");
+    setTimeout(() => {
+      dispatch(productsActions.setFilters({ key: "type", value: type }));
+    }, 200);
+  };
+  
+  useEffect(()=>{
+    dispatch(fetchProductsData({ params: filters }));
+  },[filters, dispatch])
 
 
   const handleClickOutside = (event) => {
@@ -102,14 +115,27 @@ function Navbar() {
 
         {/* Start Links */}
         <ul className="showDropDown font-inter hidden lg:flex flex-row gap-4 items-center">
-          <li className="dropdown flex items-center relative right-[-10px]" onClick={handleDropdown} ref={dropdownRef}>
+          <li 
+          className="dropdown flex items-center relative right-[-10px]" 
+          onClick={handleDropdown} ref={dropdownRef}>
             <span className="cursor-pointer">Shop</span>
             <RiArrowDropDownLine className="text-[25px] mt-1 cursor-pointer" />
             <ul className={dropdownStatus ? "show-dropdown flex flex-col dark:bg-dark py-3 px-2 z-10 bg-white absolute w-[150px] shadow-custom rounded-md" : "hidden"} style={{ top: 'calc(100% + 5px)' }}>
-              <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/men">Men</Link></li>
-              <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/women">Women</Link></li>
-              <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/kids">Kids</Link></li>
-              <li className="px-3 py-2 hover:bg-headerBackground duration-300"><Link to="/category/accessories">Accessories</Link></li>
+              <li 
+              className="px-3 py-2 hover:bg-headerBackground duration-300" 
+              onClick={()=> handleProductsFilter('men') } ><Link to="/products">Men</Link></li>
+              <li 
+              className="px-3 py-2 hover:bg-headerBackground duration-300"
+              onClick={()=> handleProductsFilter("women")}
+              ><Link to="/products">Women</Link></li>
+              <li 
+              className="px-3 py-2 hover:bg-headerBackground duration-300"
+              onClick={()=> handleProductsFilter("kids")}
+              ><Link to="/products">Kids</Link></li>
+              <li 
+              className="px-3 py-2 hover:bg-headerBackground duration-300"
+              onClick={()=> handleProductsFilter("accessories")}
+              ><Link to="/products">Accessories</Link></li>
             </ul>
           </li>
           <li><NavLink to="/products">Products</NavLink></li>

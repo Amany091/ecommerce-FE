@@ -43,14 +43,13 @@ const ProductDetails = () => {
       </div>
       <hr className="text-descriptionColor" />
 
-      <div>
+      { product?.type !== "accessories" && <div>
         <p className="text-descriptionColor mb-4 dark:text-white">select colors</p>
         <Color colors={product?.colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
-      </div>
+        <hr className="text-descriptionColor" />
+      </div>}
 
-      <hr className="text-descriptionColor" />
-
-      <div>
+      { product?.type !== "accessories" && <div>
         <p className="mb-4 text-descriptionColor dark:text-white">choose sizes</p>
         <MainSize
           sizes={[product?.size]}
@@ -58,7 +57,8 @@ const ProductDetails = () => {
           selectedSize={selectedSize}
           setSelectedSize={setSelectedSize}
         />
-      </div>
+      </div>}
+
 
       <div className="flex gap-3 my-6 flex-row  md:flex-row lg:flex-row items-center">
         <div
