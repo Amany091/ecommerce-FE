@@ -7,6 +7,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/authSlice";
+import toast from "react-hot-toast";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,12 +23,16 @@ function LoginPage() {
     setShowPassword(!showPassword)
   }
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
    try {
-     dispatch(loginUser(data));
-     window.location.href = "/"
+     await dispatch(loginUser(data)).unwrap();
+     window.location.href = "/";
    } catch (error) {
-    return error;
+     if (error.status === 401) {
+       toast.error("Invalid Email Or Password");
+     } else {
+       toast.error("Something went wrong, please try again.");
+     }
    }
   }
 

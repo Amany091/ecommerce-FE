@@ -13,7 +13,7 @@ export const createDataSlice = (
         return "?" + new URLSearchParams(params).toString();
     }
 
-    const request = async (method="GET", body =null, params, url)=>{
+    const request = async (method="GET", body =null, params = null, url)=>{
         const fullUrl = params ? `${url}${buildQueryParams(params)}` : url;
         const response = await fetch(fullUrl, {
             method,
@@ -138,7 +138,7 @@ export const createDataSlice = (
             })
             .addCase(createData.rejected, (state, action) => {
               state.loading = false;
-              state.error = action.error.message;
+              state.error = action.payload;
             })
 
             .addCase(deleteData.pending, (state, action) => {

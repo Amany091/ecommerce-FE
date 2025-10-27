@@ -33,9 +33,9 @@ const OrderTable = () => {
                   <input
                     className="h-5 w-5 border-2 border-gray-500 rounded"
                     type="checkbox"
-                    onClick={updateAllOrdersStatus}
+                    onChange={updateAllOrdersStatus}
                     disabled={orders.every(order => order.status === 'completed')}
-                    checked={orders?.every(order => order?.status === 'completed')}
+                    checked={orders.every(order => order.status === 'completed')}
                   />
                 </th>
                 <th className="px-6 py-6 text-sm md:text-base">Order number</th>
@@ -55,7 +55,7 @@ const OrderTable = () => {
                       checked={order?.status === "completed"}
                       disabled={order?.status === 'completed'}
                       className="h-5 w-5 border-2 border-gray-500 rounded dark:text-black inline"
-                      onClick={() => handleChangeOrderStatus(order?.id)}
+                      onChange={() => handleChangeOrderStatus(order?._id)}
                     />
                   </td>
                   <td className="px-6 py-6 text-sm md:text-base">{order.number}</td>
@@ -72,8 +72,13 @@ const OrderTable = () => {
                     }
                   </td>
                   <td className="px-10 py-6 flex gap-1 justify-center items-center">
-                    <FaRegEye className='text-green-500 ' />
-                    { <TiDelete color='red' className='cursor-pointer' onClick={() => dispatch(deleteOrder(order?.id))} />}
+                    {/* <FaRegEye className='text-green-500 ' /> */}
+                    { <TiDelete 
+                    color='red' 
+                    className='cursor-pointer' 
+                    onClick={() => dispatch(deleteOrder(order?.id))}
+                    size={25} 
+                    />}
                   </td>
                 </tr>
               ))}  

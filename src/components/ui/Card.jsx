@@ -6,7 +6,7 @@ function Card({ imageSrc, imageAlt, cardTitle,price, priceAfterDiscount, classNa
   return (
     <div >
       <div className="flex flex-col items-center ">
-        <div className="">
+        <div className="h-48 w-full flex justify-center items-center overflow-hidden ">
           <img
             src={imageSrc}
             alt={imageAlt}

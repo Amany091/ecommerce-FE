@@ -8,7 +8,7 @@ import LoaderSpinner from '../components/ui/LoaderSpinner'
 import { useDispatch, useSelector } from 'react-redux'
 import BreadCrumb from '../components/ui/BreadCrumb'
 import Pagination from '../components/componentPages/dashboard/Pagination'
-import { fetchOrdersData } from '../features/ordersSlice'
+import { fetchOrdersData, ordersActions } from '../features/ordersSlice'
 
 const UserOrders = () => {
     const [status, setStatus] = useState("pending")
@@ -19,14 +19,24 @@ const UserOrders = () => {
     const data = useSelector((state) => state.orders);
     const orders = data?.data?.data ?? [];
     const pagination = data?.data?.pagination;
+    const filters = data?.filters
+    
+    const handleChangeStatus = (value)=>{
+        setStatus(value)
+        dispatch(ordersActions.setFilters({key: "status", value }))
+        dispatch(fetchOrdersData({params:{...filters, status:value, page, limit:pagination?.limit}}))
+        setPage(1)
+    }
 
     useEffect(()=>{
-            dispatch(fetchOrdersData({page, limit: pagination?.limit}))
+        dispatch(fetchOrdersData({page, limit: pagination?.limit, status:"all"}))
     },[])
+
+    console.log(filters)
 
     const handleChangePage = (newPage) => {
         setPage(newPage)
-        dispatch(fetchOrdersData({params: {...data?.filters, page: newPage, limit: pagination?.limit}}))
+        // dispatch(fetchOrdersData({params: {...filters, page: newPage, limit: pagination?.limit}}))
     }
 
     return (
@@ -37,10 +47,11 @@ const UserOrders = () => {
                 <div>
                     <div className="flex flex-row items-center">
                         <h2 className='font-cairo font-bold flex-1'>Your Orders</h2>
-                            <span className={`inline-block mx-2 w-3 h-3 rounded-full ${status === "pending" ? 'bg-yellow-500' : 'bg-green-600'}`} />
-                        <select name="status" id="status" className='dark:text-black rounded-inputRadius' onChange={(e) => setStatus(e.currentTarget.value.toLowerCase().trim())}>
-                            <option value="Pending " className='dark:text-black'>Pending</option>
-                            <option value="Complete " className='dark:text-black'>Complete</option>
+                            <span className={`inline-block mx-2 w-3 h-3 rounded-full ${status === "pending" ? 'bg-yellow-500' : ''} ${status === "completed" ? 'bg-green-600' : ""} `} />
+                        <select name="status" id="status" className='dark:text-black rounded-inputRadius' onChange={(e) => handleChangeStatus(e.target.value)}>
+                            <option value="all" className='dark:text-black'>all</option>
+                            <option value="pending" className='dark:text-black'>pending</option>
+                            <option value="completed" className='dark:text-black'>completed</option>
                         </select>
                     </div>
                     {orders?.length === 0 ?
@@ -48,7 +59,7 @@ const UserOrders = () => {
                             data?.loading ? <LoaderSpinner />
                                 : (
                                     <div className=' border border-slate-300/50 rounded p-2 my-10'>
-                                        <Order orders={orders} status={status} />
+                                        <Order />
                                     </div>
                                 )
                                 

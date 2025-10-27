@@ -8,7 +8,7 @@ export default function Pagination({ total = 1, page, changePage, hasNextPage, h
 
   const getVisiblePages = () => {
     const windowSize = 5;
-    const start = Math.max(1, activePageNumber - Math.floor(windowSize / 2));
+    const start = Math.max(1, page - Math.floor(windowSize / 2));
     const end = Math.min(total, start + windowSize - 1);
 
     return pageNums.slice(start - 1, end);
@@ -20,7 +20,7 @@ export default function Pagination({ total = 1, page, changePage, hasNextPage, h
       <button
         className="rounded-[8px] text-[14px] border border-whiteBtnBorderColor py-[8px] px-[14px] flex items-center disabled:opacity-50"
         disabled={!hasPrevPage}
-        onClick={() => changePage(page+1)}
+        onClick={() => changePage(page-1)}
       >
         <FaArrowLeft />
       </button>
@@ -31,7 +31,7 @@ export default function Pagination({ total = 1, page, changePage, hasNextPage, h
           <button
             key={pageNum}
             className={`rounded-[8px] text-[14px] px-3 py-2 transition ${
-              activePageNumber === pageNum
+              page === pageNum
                 ? "bg-inputBackground dark:text-black"
                 : "hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
@@ -46,7 +46,7 @@ export default function Pagination({ total = 1, page, changePage, hasNextPage, h
       <button
         className="rounded-[8px] text-[14px] border border-whiteBtnBorderColor py-[8px] px-[14px] flex items-center disabled:opacity-50"
         disabled={!hasNextPage}
-        onClick={() => setActivePageNumber((prev) => Math.min(total, prev + 1))}
+        onClick={() => changePage(page+1)}
       >
         <FaArrowRight />
       </button>

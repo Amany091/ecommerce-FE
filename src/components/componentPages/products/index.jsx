@@ -20,7 +20,7 @@ export default function AllProducts(props) {
   const onChangePage = (newPage)=>{
     setPage(newPage)
     dispatch(productsActions.setFilters({key: 'page', value: newPage}));
-    dispatch(fetchProductsData({params: {...filters, page}}))
+    dispatch(fetchProductsData({params: {...filters, page: newPage, limit: pagination?.limit}}))
   }
 
   useEffect(()=>{

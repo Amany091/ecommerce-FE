@@ -41,7 +41,7 @@ const OrderStatusSummary = () => {
   
   const statusSummary = orders?.reduce(
     (acc, order) => {
-      if (order?.status === "complete") acc.completed += 1;
+      if (order?.status === "completed") acc.completed += 1;
       if (order?.status === "pending") acc.pending += 1;
       if (order?.status === "canceled") acc.canceled += 1;
       return acc;

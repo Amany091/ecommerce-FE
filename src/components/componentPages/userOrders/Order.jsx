@@ -1,13 +1,14 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 
-const Order = ({ orders, status }) => {
-    const ords = orders?.filter((order) => order.status.toLowerCase() == status) ?? []
-    console.log(ords, status)
+const Order = () => {
+     const data = useSelector((state) => state.orders);
+     const orders = data?.data?.data ?? [];
 
     return (
         <div>
-            {ords.length > 0 ? (
-                ords.map((ord) => (
+            {orders?.length > 0 ? (
+                orders?.map((ord) => (
                     <div className='flex gap-2 my-4' key={ord.id}>
                         <img src={ord.orderItems[0].product.imgCover} alt="order" className='w-24' />
                         <div className='flex flex-col justify-between w-full font-inter leading-none'>

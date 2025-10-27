@@ -31,7 +31,7 @@ function TopSellingCards() {
         <div className="cards grid lg:grid-cols-4 md:grid-cols-3 gap-x-5 gap-y-10 justify-self-center ">
           {productsWithHigherRate?.length <= 3 && !viewAll ?
             productsWithHigherRate.map((prod, index) => (
-              <div key={`${prod.id}-${index}`} className="card">
+              <div key={`${prod._id}-${index}`} className="card">
                 <Link to={`/products/${prod._id}`}>
                   <Card
                     imageSrc={prod.imgCover}
@@ -45,7 +45,7 @@ function TopSellingCards() {
               </div>
             )) :
             productsWithHigherRate?.slice(3).map((prod) => (
-              <div key={prod.id} className="card">
+              <div key={prod._id} className="card">
                 <Link to={`/products/${prod._id}`}>
                   <Card
                     imageSrc={prod.imgCover}
@@ -96,7 +96,7 @@ function TopSellingCards() {
       {windowWidth > 768 && productsWithHigherRate?.length > 4 && !viewAll && (
         <div className="flex justify-center pb-3 pt-10">
           <button
-            className="bg-white p-buttonPadding border border-solid border-whiteBtnBorderColor rounded-buttonRadius"
+            className="bg-white dark:bg-dark p-buttonPadding border border-solid border-whiteBtnBorderColor rounded-buttonRadius"
             onClick={handleViewAll}
           >
             View All
@@ -106,7 +106,7 @@ function TopSellingCards() {
       {windowWidth > 768 && productsWithHigherRate?.length > 4 && viewAll && (
         <div className="flex justify-center pb-3 pt-10">
           <button
-            className="bg-white p-buttonPadding border border-solid border-whiteBtnBorderColor rounded-buttonRadius"
+            className="bg-white dark:bg-dark p-buttonPadding border border-solid border-whiteBtnBorderColor rounded-buttonRadius"
             onClick={handleShowLess}
           >
             Show Less

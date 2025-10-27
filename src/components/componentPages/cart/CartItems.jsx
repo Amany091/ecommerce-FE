@@ -25,13 +25,13 @@ const CartItems = () => {
   return (
     <>
       <div className=" p-5 rounded-lg shadow-md border-[1px] border-gray-300 h-fit">
-      {cart?.length === 0 && data?.loading === false ? (
+      {cart?.length === 0 ? (
         <div className='flex justify-center items-center font-bold text-2xl'>
           <p>Your cart is empty</p>
         </div>
         ) : 
             <div className="flex flex-col gap-10">
-              {cart?.map((item, index) => (
+              { data?.loading ? <p className='text-center text-lg'>Loading your cart</p> : cart?.map((item, index) => (
                 <div
                   key={item.id}
                   className={`flex gap-3`}

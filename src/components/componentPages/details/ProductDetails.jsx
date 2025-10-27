@@ -6,9 +6,11 @@ import { FaMinus, FaPlus } from "react-icons/fa6";
 import { addItemtoCart } from "../../../features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "../../../features/authSlice";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const data = useSelector((state) => state.products);
+  const cart = useSelector((state) => state.cart);
   const product = data?.item?.data ?? {};
   const dispatch = useDispatch()
   const [count, setCount] = useState(1); // order quantity
@@ -21,7 +23,11 @@ const ProductDetails = () => {
   async function handleAddToCart() {
     setLoading(true)
     const body = { orderItems:[{product: product?._id, quantity: count}], user: currentUser?._id, status: 'pending' };
-    await dispatch(addItemtoCart(body)).unwrap().finally(()=> setLoading(false))
+    await dispatch(addItemtoCart(body)).unwrap()
+    .catch(()=>{
+      toast.error(cart?.error.details[0].msg || "Failed to add to cart")
+    })
+    .finally(()=> setLoading(false))
   }
 
   useEffect(()=>{
@@ -43,11 +49,13 @@ const ProductDetails = () => {
       </div>
       <hr className="text-descriptionColor" />
 
-      { product?.type !== "accessories" && <div>
-        <p className="text-descriptionColor mb-4 dark:text-white">select colors</p>
-        <Color colors={product?.colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
-        <hr className="text-descriptionColor" />
-      </div>}
+      { product?.type !== "accessories" && (
+        <div>
+          <p className="text-descriptionColor mb-4 dark:text-white">select colors</p>
+          <Color colors={product?.colors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+        </div>
+      )}
+      { product?.type !== "accessories" && <hr className="text-descriptionColor" />}
 
       { product?.type !== "accessories" && <div>
         <p className="mb-4 text-descriptionColor dark:text-white">choose sizes</p>

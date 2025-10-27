@@ -62,7 +62,8 @@ function Navbar() {
   };
   
   useEffect(()=>{
-    dispatch(fetchProductsData({ params: filters }));
+    if(Object.keys(filters).length === 0) return;
+    dispatch(fetchProductsData({ params: { ...filters } }));
   },[filters, dispatch])
 
 
@@ -145,10 +146,10 @@ function Navbar() {
         {/* End Links */}
 
         {/* Start Search */}
-        <div className="lg:flex items-center flex-1 font-inter hidden ">
+        {/* <div className="lg:flex items-center flex-1 font-inter hidden ">
           <CiSearch className="text-[20.27px] relative left-7  placeholder-placeholderColor dark:text-slate-300" />
           <input type="search" name="search" id="search" placeholder="Search for products..." className="block rounded-buttonRadius bg-inputBackground dark:text-black py-[12px] pr-4 pl-8 border-none flex-1" />
-        </div>
+        </div> */}
         {/* End Search */}
 
         {/* Start Icons */}
@@ -167,7 +168,7 @@ function Navbar() {
               <ul className={loginDropdownStatus ? "show-dropdown flex flex-col py-3 px-2 bg-white absolute w-[150px] shadow-custom rounded-md z-10" : "hidden"} style={{ top: 'calc(100% + 15px)', right: 'calc(-100%)' }}>
                 <li className="px-2 py-2  hover:bg-headerBackground duration-300 dark:text-black "><Link to="/">Account</Link></li>
                 {currentUser?.role === "admin" && <Link to="/orders" ><li className="px-2 py-2  hover:bg-headerBackground duration-300 dark:text-black">Orders</li></Link>}
-                <li className="px-2 py-2  hover:bg-headerBackground duration-300 border-b border-headerBackground dark:text-black"><Link to="/">Address</Link></li>
+                {/* <li className="px-2 py-2  hover:bg-headerBackground duration-300 border-b border-headerBackground dark:text-black"><Link to="/">Address</Link></li> */}
                 <li className="px-2 py-2 hover:bg-headerBackground duration-300 text-discountColor" onClick={()=> handleLogout()} >logout</li>
               </ul>
             </span> :
@@ -179,9 +180,9 @@ function Navbar() {
               </span>
           }
           {theme === "light" ?
-            <FaRegMoon onClick={() => dispatch(toggleTheme())} className="dark:text-white" />
+            <FaRegMoon onClick={() => dispatch(toggleTheme())} size={25} className="dark:text-white" />
             :
-            <MdOutlineWbSunny onClick={() => dispatch(toggleTheme())} className="dark:text-white"  />}
+            <MdOutlineWbSunny onClick={() => dispatch(toggleTheme())} size={25} className="dark:text-white"  />}
         </div>
         {/* End Icons */}
 
